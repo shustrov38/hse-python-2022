@@ -26,9 +26,19 @@ def count_words(text: str) -> Dict[str, int]:
              значение - количество вхождений слов в текст
     """
 
-    # пиши свой код здесь
+    is_letter = lambda ch: ('A' <= ch and ch <= 'Z') or ('a' <= ch and ch <= 'z')
+    thesaurus = {}
 
-    return {}
+    text = ''.join(list(filter(lambda ch: ch not in '?.,!/;:', text.lower())))
+    print(text)
+    words = [word for word in text.split() if all(is_letter(symbol) for symbol in word)]
+    for word in words:
+        if word in thesaurus:
+            thesaurus[word] += 1
+        else:
+            thesaurus[word] = 1
+
+    return thesaurus
 
 
 def exp_list(numbers: List[int], exp: int) -> List[int]:
@@ -40,9 +50,9 @@ def exp_list(numbers: List[int], exp: int) -> List[int]:
     :return: список натуральных чисел
     """
 
-    # пиши свой код здесь
+    result = [number ** exp for number in numbers]
 
-    return []
+    return result
 
 
 def get_cashback(operations: List[Dict[str, Any]], special_category: List[str]) -> float:
@@ -58,13 +68,10 @@ def get_cashback(operations: List[Dict[str, Any]], special_category: List[str]) 
     :return: размер кешбека
     """
 
-    res = 0
-    for x in operations:
-        if x['category'] in special_category:
-            res += x['amount'] * 0.05
-        else:
-            res += x['amount'] * 0.01
-    return res
+    get_rate = lambda operation: 0.05 if operation['category'] in special_category else 0.01
+    cashback = sum([get_rate(operation) * operation['amount'] for operation in operations])
+
+    return cashback
 
 
 def get_path_to_file() -> Optional[Path]:
@@ -105,6 +112,15 @@ def csv_reader(header: str) -> int:
     :return: количество уникальных элементов в столбце
     """
 
-    # пиши свой код здесь
+    import csv
+    with open(get_path_to_file(), newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        table = list(spamreader)
+        head = table[0]
+        body = table[1:]
+        header_index = head.index(header)
+        values = set()
+        for row in body:
+            values.add(row[header_index])
 
-    return 0
+    return len(values)
